@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EVALUATION FAB-2026 — Rédaction Administrative A3G12</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #1a2a4a;
+    min-height: 100vh;
+    padding: 0 0 40px 0;
+  }
+
+  .hero {
+    background: linear-gradient(160deg, #1a3a6a 0%, #2d5a9e 50%, #1a2a4a 100%);
+    text-align: center;
+    padding: 48px 24px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='8'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+
+  .hero h1 {
+    color: #fff;
+    font-size: clamp(22px, 5vw, 32px);
+    font-weight: 800;
+    letter-spacing: 1px;
+    line-height: 1.25;
+    text-transform: uppercase;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    position: relative;
+  }
+
+  .hero p {
+    color: rgba(255,255,255,0.82);
+    font-size: 15px;
+    margin-top: 14px;
+    font-style: italic;
+    position: relative;
+  }
+
+  .quiz-container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 14px;
+  }
+
+  .question-block {
+    background: #fff;
+    border-radius: 14px;
+    margin: 20px 0;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  }
+
+  .question-header {
+    background: #2d4e80;
+    color: #fff;
+    padding: 18px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+
+  .options-area {
+    padding: 10px 0 4px;
+  }
+
+  .option-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 13px 20px;
+    cursor: default;
+    user-select: none;
+  }
+
+  .option-label input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    border: 2.5px solid #bbb;
+    border-radius: 50%;
+    background: #fff;
+    margin-top: 1px;
+    position: relative;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .option-label input[type="radio"]:checked {
+    border-color: #2d5a9e;
+    background: #2d5a9e;
+  }
+
+  .option-label input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    background: #fff;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .option-text {
+    font-size: 14.5px;
+    color: #222;
+    line-height: 1.45;
+    padding-top: 1px;
+  }
+
+  .required-tag {
+    display: inline-block;
+    background: #f0f0f0;
+    color: #666;
+    font-size: 12px;
+    border-radius: 5px;
+    padding: 3px 10px;
+    margin: 4px 20px 14px;
+  }
+
+  .explanation-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: 1.5px solid #2d5a9e;
+    color: #2d5a9e;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 4px 20px 16px;
+    transition: background 0.18s, color 0.18s;
+  }
+
+  .explanation-toggle:hover {
+    background: #2d5a9e;
+    color: #fff;
+  }
+
+  .explanation-toggle svg {
+    transition: transform 0.25s;
+  }
+
+  .explanation-toggle.open svg {
+    transform: rotate(180deg);
+  }
+
+  .explanation-box {
+    display: none;
+    background: #eef4ff;
+    border-left: 4px solid #2d5a9e;
+    margin: 0 20px 16px;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    font-size: 13.5px;
+    color: #1a2a4a;
+    line-height: 1.6;
+  }
+
+  .explanation-box.visible {
+    display: block;
+  }
+
+  .explanation-box .page-ref {
+    display: inline-block;
+    margin-top: 8px;
+    background: #2d5a9e;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 5px;
+    padding: 2px 10px;
+  }
+
+  .submit-area {
+    max-width: 680px;
+    margin: 28px auto 0;
+    padding: 0 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .btn-clear {
+    background: #fff;
+    border: 1.5px solid #bbb;
+    color: #444;
+    border-radius: 10px;
+    padding: 13px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.18s;
+  }
+
+  .btn-clear:hover { background: #f5f5f5; }
+
+  .btn-submit {
+    background: #2d5a9e;
+    border: none;
+    color: #fff;
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    letter-spacing: 1px;
+    transition: background 0.18s;
+  }
+
+  .btn-submit:hover { background: #1a3a6a; }
+
+  .footer-note {
+    text-align: center;
+    color: rgba(255,255,255,0.45);
+    font-size: 12px;
+    margin-top: 18px;
+  }
+
+  hr.divider {
+    border: none;
+    border-top: 1px solid #e8e8e8;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>EVALUATION FAB-2026<br>RÉDACTION<br>ADMINISTRATIVE GRADE<br>A3G12</h1>
+  <p>Ce questionnaire vise à évaluer le niveau de lecture de l'apprenant</p>
+</div>
+
+<div class="quiz-container">
+
+  <!-- Q1 -->
+  <div class="question-block">
+    <div class="question-header">1. Quelles sont les mentions circonstancielles de la lettre entre service ?</div>
+    <div class="options-area">
+      <label class="option-label">
+        <input type="radio" name="q1" value="a"> <span class="option-text">a) Les pièces jointes</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q1" value="b" checked> <span class="option-text">b) Le lieu et la date d'expédition</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q1" value="c"> <span class="option-text">c) L'appellation officielle et la devise de l'État</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q1" value="d"> <span class="option-text">d) Le N° d'enregistrement</span>
+      </label>
+    </div>
+    <button class="explanation-toggle" onclick="toggleExpl(this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      Voir l'explication
+    </button>
+    <div class="explanation-box">
+      <strong>Réponse correcte : b) Le lieu et la date d'expédition</strong><br><br>
+      Les mentions circonstancielles sont des mentions utilisées sous certaines lettres en fonction des circonstances particulières. Elles se classent en trois groupes : les mentions destinées à attirer l'attention du destinataire (URGENT, RAPPEL, VU ET TRANSMIS LE…), les mentions relatives au caractère confidentiel (PERSONNEL, CONFIDENTIEL, SECRET…), et les mentions relatives à l'acheminement postal (RECOMMANDÉ, EXPRÈS…). Elles sont portées en lettres majuscules sous le timbre ou apposées au tampon.<br><br>
+      Cependant, parmi les options proposées, <strong>le lieu et la date d'expédition</strong> est la mention qui varie selon les circonstances (lieu d'émission et moment de rédaction). Les pièces jointes, l'appellation officielle et le N° d'enregistrement sont des mentions facultatives ou obligatoires, mais pas circonstancielles.
+      <span class="page-ref">📄 Page 46 / 104 — 1.4 Les mentions circonstancielles</span>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="question-block">
+    <div class="question-header">2. Les initiales du rédacteur et de l'opérateur de saisie s'inscrivent :</div>
+    <div class="options-area">
+      <label class="option-label">
+        <input type="radio" name="q2" value="a" checked> <span class="option-text">a) En haut et à gauche, au-dessus du timbre</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q2" value="b"> <span class="option-text">b) En haut et à gauche de la page</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q2" value="c"> <span class="option-text">c) En bas à gauche</span>
+      </label>
+    </div>
+    <button class="explanation-toggle" onclick="toggleExpl(this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      Voir l'explication
+    </button>
+    <div class="explanation-box">
+      <strong>Réponse correcte : a) En haut et à gauche, au-dessus du timbre</strong><br><br>
+      les initiales du rédacteur et de l'opérateur de saisie « s'inscrivent en haut à gauche, <strong>au-dessus du timbre</strong> ». Cette position est précise : elles ne se placent pas simplement "en haut à gauche de la page" (ce qui serait vague), mais spécifiquement au-dessus du timbre du service, qui lui-même se trouve dans l'angle supérieur gauche.
+      <span class="page-ref">📄 Page 37 / 104 — 1.2.1 Les initiales du rédacteur et de l'opérateur de saisie</span>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="question-block">
+    <div class="question-header">3. Les initiales du rédacteur et de l'opérateur de saisie sont :</div>
+    <div class="options-area">
+      <label class="option-label">
+        <input type="radio" name="q3" value="a"> <span class="option-text">a) Les premières lettres écrites en minuscule du nom du rédacteur et de celui de l'opérateur de saisie</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q3" value="b" checked> <span class="option-text">b) Les premières lettres écrites en majuscule du nom du rédacteur et de celui de l'opérateur de saisie</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q3" value="c"> <span class="option-text">c) Les noms de familles du rédacteur et de l'opérateur de saisie écrits en majuscule</span>
+      </label>
+    </div>
+    <button class="explanation-toggle" onclick="toggleExpl(this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      Voir l'explication
+    </button>
+    <div class="explanation-box">
+      <strong>Réponse correcte : b) Les premières lettres écrites en majuscule du nom du rédacteur et de celui de l'opérateur de saisie</strong><br><br>
+      les initiales sont « les premières lettres <strong>écrites en majuscule</strong> du nom du rédacteur et de l'opérateur de saisie, séparées par une barre oblique ». Exemple : KH/PS pour Kouakou Hermann et Penou Sanabé. Il ne s'agit pas des noms de famille complets (option c), et elles s'écrivent obligatoirement en majuscules, pas en minuscules (option a).
+      <span class="page-ref">📄 Page 37 / 104 — 1.2.1 Les initiales du rédacteur et de l'opérateur de saisie</span>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="question-block">
+    <div class="question-header">4. Le numéro d'enregistrement se place :</div>
+    <div class="options-area">
+      <label class="option-label">
+        <input type="radio" name="q4" value="a" checked> <span class="option-text">a) Sous le timbre du service</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q4" value="b"> <span class="option-text">b) Sous l'appellation officielle et la devise de l'état</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q4" value="c"> <span class="option-text">c) Sous l'objet</span>
+      </label>
+    </div>
+    <button class="explanation-toggle" onclick="toggleExpl(this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      Voir l'explication
+    </button>
+    <div class="explanation-box">
+      <strong>Réponse correcte : a) Sous le timbre du service</strong><br><br>
+      Le cours précise clairement que le numéro d'enregistrement « se place <strong>sous le timbre</strong> ». Il comprend le numéro d'ordre du registre, suivi des initiales du service émetteur et éventuellement de celles de la subdivision, dans l'ordre hiérarchique (ex. : N° 67/MEMFPMA/DGFP/DFRC). Cette position le place du côté gauche de la page, dans la continuité de l'organigramme du service émetteur.
+      <span class="page-ref">📄 Page 39 / 104 — 1.2.5 Le numéro d'enregistrement</span>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="question-block">
+    <div class="question-header">5. Où s'inscrit précisément le timbre du service dans la lettre entre service ?</div>
+    <div class="options-area">
+      <label class="option-label">
+        <input type="radio" name="q5" value="a"> <span class="option-text">a) Cette mention est placée en haut et à droite de la page</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q5" value="b"> <span class="option-text">b) Le timbre est placé en haut, à droite sous l'appellation officielle et la devise de l'État</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q5" value="c" checked> <span class="option-text">c) Le timbre s'inscrit sous les initiales du rédacteur et de l'opérateur de saisie, en haut et à gauche</span>
+      </label>
+    </div>
+    <button class="explanation-toggle" onclick="toggleExpl(this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      Voir l'explication
+    </button>
+    <div class="explanation-box">
+      <strong>Réponse correcte : c) Le timbre s'inscrit sous les initiales du rédacteur et de l'opérateur de saisie, en haut et à gauche</strong><br><br>
+      le timbre du service « figure toujours dans <strong>l'angle supérieur gauche</strong> ». Les initiales du rédacteur se placent au-dessus du timbre, ce qui signifie que le timbre est bien en dessous des initiales, en haut à gauche de la page. L'option a) décrit la position de l'appellation officielle de l'État (droite), et l'option b) est incorrecte car l'appellation est à droite et non au-dessus du timbre.
+      <span class="page-ref">📄 Page 38 / 104 — 1.2.2 Le timbre du service</span>
+    </div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="question-block">
+    <div class="question-header">6. Le timbre du service est :</div>
+    <div class="options-area">
+      <label class="option-label">
+        <input type="radio" name="q6" value="a" checked> <span class="option-text">a) La mention d'identification du service émetteur du document</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q6" value="b"> <span class="option-text">b) L'appellation officielle de l'État</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q6" value="c"> <span class="option-text">c) La formule d'envoi de la lettre par l'expéditeur au destinataire</span>
+      </label>
+    </div>
+    <button class="explanation-toggle" onclick="toggleExpl(this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      Voir l'explication
+    </button>
+    <div class="explanation-box">
+      <strong>Réponse correcte : a) La mention d'identification du service émetteur du document</strong><br><br>
+      le timbre du service comme « l'ensemble des mentions qui indiquent la <strong>provenance du document administratif</strong> (Ministère → Direction → Service) ». Il est le reflet de l'organigramme structurel du service émetteur. L'appellation officielle de l'État (option b) est une mention distincte placée à droite ; la formule d'envoi (option c) correspond à la suscription.
+      <span class="page-ref">📄 Page 38 / 104 — 1.2.2 Le timbre du service</span>
+    </div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="question-block">
+    <div class="question-header">7. L'appellation officielle et la devise de l'État est placée :</div>
+    <div class="options-area">
+      <label class="option-label">
+        <input type="radio" name="q7" value="a" checked> <span class="option-text">a) En haut et à droite de la page</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q7" value="b"> <span class="option-text">b) En haut à droite de la page</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q7" value="c"> <span class="option-text">c) Au milieu de la page</span>
+      </label>
+    </div>
+    <button class="explanation-toggle" onclick="toggleExpl(this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      Voir l'explication
+    </button>
+    <div class="explanation-box">
+      <strong>Réponse correcte : a) En haut et à droite de la page</strong><br><br>
+      l'appellation officielle de l'État « figure <strong>en haut à droite de la page</strong>, en face du timbre ». En Côte d'Ivoire : « RÉPUBLIQUE DE CÔTE D'IVOIRE » puis en dessous « Union – Discipline – Travail ». Elle fait face au timbre qui, lui, se trouve en haut à gauche. L'option a) est la formulation la plus précise et fidèle au cours.
+      <span class="page-ref">📄 Page 38 / 104 — 1.2.3 L'appellation officielle de l'État et la devise</span>
+    </div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="question-block">
+    <div class="question-header">8. L'appellation officielle de l'État s'inscrit :</div>
+    <div class="options-area">
+      <label class="option-label">
+        <input type="radio" name="q8" value="a" checked> <span class="option-text">a) En majuscule</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q8" value="b"> <span class="option-text">b) En minuscule</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q8" value="c"> <span class="option-text">c) Les premières lettres en majuscule</span>
+      </label>
+    </div>
+    <button class="explanation-toggle" onclick="toggleExpl(this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      Voir l'explication
+    </button>
+    <div class="explanation-box">
+      <strong>Réponse correcte : a) En majuscule</strong><br><br>
+      Le cours est explicite : c'est « l'appellation officielle de l'État <strong>en majuscule</strong>, suivie en dessous de la devise nationale ». Exemple : « RÉPUBLIQUE DE CÔTE D'IVOIRE » (tout en majuscules). La devise qui suit, elle, s'écrit en minuscule. Écrire uniquement les premières lettres en majuscule (option c) ou tout en minuscule (option b) serait une faute de présentation.
+      <span class="page-ref">📄 Page 38 / 104 — 1.2.3 L'appellation officielle de l'État et la devise</span>
+    </div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="question-block">
+    <div class="question-header">9. La devise de l'État est inscrite :</div>
+    <div class="options-area">
+      <label class="option-label">
+        <input type="radio" name="q9" value="a"> <span class="option-text">a) En majuscule directement sous l'appellation de l'état</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q9" value="b" checked> <span class="option-text">b) En minuscule directement sous l'appellation de l'État</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q9" value="c"> <span class="option-text">c) En minuscule, juste à côté de l'appellation de l'état</span>
+      </label>
+    </div>
+    <button class="explanation-toggle" onclick="toggleExpl(this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      Voir l'explication
+    </button>
+    <div class="explanation-box">
+      <strong>Réponse correcte : b) En minuscule directement sous l'appellation de l'État</strong><br><br>
+      Le cours indique que l'appellation officielle de l'État est écrite en majuscule, « suivie <strong>en dessous</strong> de la devise nationale ». Pour la Côte d'Ivoire, la présentation est : « RÉPUBLIQUE DE CÔTE D'IVOIRE » (majuscules) puis en dessous « Union – Discipline – Travail » (minuscules avec initiales en majuscule). La devise ne s'écrit pas à côté (option c) ni en majuscule (option a).
+      <span class="page-ref">📄 Page 38 / 104 — 1.2.3 L'appellation officielle de l'État et la devise</span>
+    </div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="question-block">
+    <div class="question-header">10. Son but est de permettre au destinataire d'avoir d'un coup d'œil l'idée générale du contenu du courrier et de lui en faciliter le développement, la ventilation et le traitement. Il s'agit de :</div>
+    <div class="options-area">
+      <label class="option-label">
+        <input type="radio" name="q10" value="a" checked> <span class="option-text">a) L'objet</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q10" value="b"> <span class="option-text">b) La suscription ou réclame</span>
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q10" value="c"> <span class="option-text">c) Le timbre du service</span>
+      </label>
+    </div>
+    <button class="explanation-toggle" onclick="toggleExpl(this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      Voir l'explication
+    </button>
+    <div class="explanation-box">
+      <strong>Réponse correcte : a) L'objet</strong><br><br>
+      La description correspond exactement à la définition de <strong>l'objet</strong> telle qu'elle est donnée dans le cours (1.2.7). L'objet permet au destinataire d'identifier d'un seul coup d'œil le contenu du courrier et d'en faciliter le développement, la ventilation et le traitement. Il doit être bref et précis. La suscription (option b) est la formule d'envoi au destinataire, et le timbre (option c) identifie le service émetteur.
+      <span class="page-ref">📄 Page 41 / 104 — 1.2.7 L'objet</span>
+    </div>
+  </div>
+
+</div>
+
+
+
+<script>
+  function toggleExpl(btn) {
+    btn.classList.toggle('open');
+    const box = btn.nextElementSibling;
+    box.classList.toggle('visible');
+    btn.innerHTML = btn.classList.contains('open')
+      ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg> Masquer l'explication`
+      : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg> Voir l'explication`;
+  }
+
+  function clearQuiz() {
+    if (!confirm('Êtes-vous sûr de vouloir effacer toutes les réponses ?')) return;
+    document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+    document.querySelectorAll('.explanation-box').forEach(b => b.classList.remove('visible'));
+    document.querySelectorAll('.explanation-toggle').forEach(btn => {
+      btn.classList.remove('open');
+      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg> Voir l'explication`;
+    });
+  }
+</script>
+</body>
+</html>
